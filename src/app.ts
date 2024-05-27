@@ -15,7 +15,7 @@ app.use(
 );
 
 app.get("/", (req, res, next) => {
-    res.json({ message: "Welcome to elib apis" });
+    res.json({ message: "Welcome to E_Book Api" });
 });
 
 
