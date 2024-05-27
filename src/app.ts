@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { config } from "./config/config";
 import globalErrorHandler from "./middleware/globalErrorHandler";
+import userRouter from "./user/userRoute";
 
 const app = express();
 
@@ -18,5 +19,9 @@ app.get("/", (req, res, next) => {
 });
 
 
-app.use(globalErrorHandler)
+app.use('/api/users', userRouter)
+app.use(globalErrorHandler);
+
+
+
 export default app;
