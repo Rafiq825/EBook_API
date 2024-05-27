@@ -9,13 +9,10 @@ import { User } from "./userTypes";
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
 
-  // Validation
   if (!name || !email || !password) {
     const error = createHttpError(400, "All fields are required");
     return next(error);
   }
-
-  // Database call.
   try {
     const user = await userModel.findOne({ email });
     if (user) {
@@ -28,8 +25,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     return next(createHttpError(500, "Error while getting user"));
   }
-
-  /// password -> hash
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -45,12 +40,11 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    // Token generation JWT
     const token = sign({ sub: newUser._id }, config.jwtSecret as string, {
       expiresIn: "7d",
       algorithm: "HS256",
     });
-    // Response
+
     res.status(201).json({ accessToken: token });
   } catch (err) {
     return next(createHttpError(500, "Error while signing the jwt token"));
@@ -64,7 +58,6 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     return next(createHttpError(400, "All fields are required"));
   }
 
-  // todo: wrap in try catch.
   const user = await userModel.findOne({ email });
   if (!user) {
     return next(createHttpError(404, "User not found."));
@@ -76,8 +69,6 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     return next(createHttpError(400, "Username or password incorrect!"));
   }
 
-  // todo: handle errors
-  // Create accesstoken
   const token = sign({ sub: user._id }, config.jwtSecret as string, {
     expiresIn: "7d",
     algorithm: "HS256",
